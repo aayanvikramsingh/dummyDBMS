@@ -1,15 +1,15 @@
-name: LeetCode Dummy Cron
+name: LeetCode Supabase Cron
 
 on:
   schedule:
     - cron: "*/5 * * * *"  # every 5 minutes
-  workflow_dispatch:       # manual trigger
+  workflow_dispatch:       # allow manual trigger from GitHub UI
 
 permissions:
-  contents: write  # allow committing back to the repo
+  contents: write  # only needed if you later decide to commit artifacts
 
 jobs:
-  update-excel:
+  update-database:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,15 +24,8 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run real LeetCode data fetch script
-        run: python fetch_real_data.py
-
-      - name: Commit and push changes
+      - name: Run Supabase sync script
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add leetcode_data.xlsx || true
-          git commit -m "🕒 Auto update: LeetCode data at $(date -u +"%Y-%m-%d %H:%M:%S UTC")" || echo "No changes to commit"
-          git push origin HEAD:main
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: python fetch_to_supabase.py
