@@ -33,18 +33,28 @@ def fetch_user_data(username):
     }
     """
     try:
-        response = requests.post(url, json={"query": query, "variables": {"username": username}}, timeout=10)
+        response = requests.post(
+            url,
+            json={"query": query, "variables": {"username": username}},
+            timeout=10
+        )
         response.raise_for_status()
         data = response.json()
 
         stats = data["data"]["matchedUser"]["submitStatsGlobal"]["acSubmissionNum"]
         record = {"username": username}
+
+        # ✅ Skip the "all" field — only insert easy, medium, hard
         for s in stats:
-            record[s["difficulty"].lower()] = s["count"]
+            diff = s["difficulty"].lower()
+            if diff == "all":
+                continue
+            record[diff] = s["count"]
 
         record["timestamp"] = datetime.utcnow().isoformat()
         print(f"✅ {username} fetched successfully.")
         return record
+
     except Exception as e:
         print(f"❌ Failed for {username}: {e}")
         return None
@@ -68,7 +78,7 @@ def main():
         record = fetch_user_data(user)
         if record:
             all_records.append(record)
-        time.sleep(2)  # avoid rate limiting
+        time.sleep(2)  # avoid hitting rate limits
     insert_to_supabase(all_records)
 
 
