@@ -24,8 +24,8 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run dummy data fetch script
-        run: python fetch_dummy_data.py
+      - name: Run real LeetCode data fetch script
+        run: python fetch_real_data.py
 
       - name: Commit and push changes
         env:
