@@ -10,10 +10,13 @@ SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# LeetCode usernames to track
+# 🧩 LeetCode usernames to track
 USERS = [
     "aayanv5201",
-    "Santhosh2005"
+    "Santhosh2005",
+    "AbhishekSNair",
+    "Adma777",
+    "Adarsh200IQ"
 ]
 
 def fetch_user_data(username):
@@ -44,7 +47,7 @@ def fetch_user_data(username):
         stats = data["data"]["matchedUser"]["submitStatsGlobal"]["acSubmissionNum"]
         record = {"username": username}
 
-        # ✅ Skip the "all" field — only insert easy, medium, hard
+        # ✅ Skip the "all" field — only keep easy, medium, hard
         for s in stats:
             diff = s["difficulty"].lower()
             if diff == "all":
@@ -60,16 +63,20 @@ def fetch_user_data(username):
         return None
 
 
-def insert_to_supabase(records):
-    """Insert fetched records into Supabase."""
+def upsert_to_supabase(records):
+    """Insert new or update existing records based on username."""
     if not records:
-        print("No records to insert.")
+        print("No records to upsert.")
         return
     try:
-        data, count = supabase.table("leetcode_stats").insert(records).execute()
-        print(f"💾 Inserted {len(records)} rows into Supabase.")
+        data, count = (
+            supabase.table("leetcode_stats")
+            .upsert(records, on_conflict="username")
+            .execute()
+        )
+        print(f"🔄 Upserted {len(records)} rows into Supabase.")
     except Exception as e:
-        print(f"❌ Supabase insert failed: {e}")
+        print(f"❌ Supabase upsert failed: {e}")
 
 
 def main():
@@ -79,7 +86,7 @@ def main():
         if record:
             all_records.append(record)
         time.sleep(2)  # avoid hitting rate limits
-    insert_to_supabase(all_records)
+    upsert_to_supabase(all_records)
 
 
 if __name__ == "__main__":
