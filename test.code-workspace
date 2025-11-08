@@ -1,0 +1,37 @@
+{
+	"folders": [
+		{
+			"path": "C:/Users/aayan/Downloads/test"
+		},
+		{
+			"path": "../../../../ML/LAB/LAB3_19AUG/PES2UG23CS022_Lab3/PES2UG23CS022_Lab3"
+		},
+		{
+			"path": "../../../../../DSA"
+		},
+		{
+			"path": "../../../../BD"
+		},
+		{
+			"path": "../../../../DA"
+		},
+		{
+			"path": "../../.."
+		},
+		{
+			"path": "../../../../ML"
+		},
+		{
+			"path": "../../../../SE"
+		},
+		{
+			"path": "C:/Users/aayan/Downloads/downloads_orange"
+		},
+		{
+			"path": "../../../../SE/SE_PROJECT/PESU_EC_CSE_A_P73_API_Rate_Limiter_Agile-PipeDream"
+		}
+	],
+	"settings": {
+		"sqltools.connections": []
+	}
+}
